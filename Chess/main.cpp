@@ -2,11 +2,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <termio.h>
 
 using namespace std;
 
 // #define getch() (p1 == p2 && (p2 = (p1 = buf) + fread(buf, 1, 1 << 20, stdin), p1 == p2) ? EOF : *p1++)
-#define getch() getchar()
+// #define getch() getchar()
 char buf[1 << 20], *p1, *p2;
 
 inline bool iswasd(char ch)
@@ -16,6 +17,21 @@ inline bool iswasd(char ch)
 	if (ch == 's' || ch == 'S') return 1;
 	if (ch == 'd' || ch == 'D') return 1;
 	return 0;
+}
+int getch(void)
+{
+	struct termios tm, tm_old;
+	int fd = 0, ch;
+	if (tcgetattr(fd, &tm) < 0)
+		return -1;
+	tm_old = tm;
+	cfmakeraw(&tm);
+	if (tcsetattr(fd, TCSANOW, &tm) < 0)
+		return -1;
+	ch = getchar();
+	if (tcsetattr(fd, TCSANOW, &tm_old) < 0)
+		return -1;
+	return ch;
 }
 
 class ChessGame
@@ -132,7 +148,7 @@ int main(void)
 	puts("use y to determind");
 	puts("input b to begin");
 	char ch;
-	while (ch = getchar() != 'b');
+	while (ch = getch() != 'b');
 	game.main();
 	return 0;
 }
