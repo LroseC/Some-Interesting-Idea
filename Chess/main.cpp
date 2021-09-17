@@ -140,15 +140,26 @@ class ChessGame
 			++turn;
 			win = Check();
 		}
-}game;
+};
 
 int main(void)
 {
-	puts("use WASD to move the cursor");
-	puts("use y to determind");
-	puts("input b to begin");
-	char ch;
-	while (ch = getch() != 'b');
-	game.main();
+	while (1) {
+		bool fail = 0;
+		puts("use WASD to move the cursor");
+		puts("use y to determind");
+		puts("input b to begin");
+		puts("input q to quit");
+		char ch;
+		while ((ch = getch()) != 'b') {
+			if (ch == 'q') {
+				fail = 1;
+				break;
+			}
+		}
+		if (fail) break;
+		ChessGame game;
+		game.main();
+	}
 	return 0;
 }
